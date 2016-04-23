@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Creating the Yo Button"
-date:   2016-04-19 14:55:27 -0700
-categories: jekyll update
+date:   2016-04-20
+categories: hardware esp8266 msp430
 ---
 You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
