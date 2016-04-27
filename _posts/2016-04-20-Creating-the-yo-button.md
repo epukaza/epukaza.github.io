@@ -1,25 +1,20 @@
 ---
 layout: post
-title:  "Creating the Yo Button"
+title:  "Creating the Yo Button, Part 1"
 date:   2016-04-20
 categories: hardware esp8266 msp430
+permalink: /Creating-the-yo-button-1
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+A while back I was contacted by my friend [Aria Sabeti][Aria] asking for electronics help on his [Yo Doorbell][doorbell] project. He needed help with the relay. I commented that an esp8266 would be a better fit for the project, and that a Raspberry Pi was overkill. My comment was put to the test soon after, when the founder of Yo saw the project and contacted us to create a hardware Yo Button.
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+The goal was to make an IoT button similar to the Amazon Dash button: long battery life (at least weeks if not months), usable by a grandmother, and easily setup. Along the way we encountered and overcame several challenges in our design, ranging from technical to regulatory.
 
-Jekyll also offers powerful support for code snippets:
+1. FCC certification
+2. 
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+The battery life requirement immediately became an obstacle to using the esp8266. In our initial tests, we could not get the current consumption to be any lower than 40mA while the chip was awake and idling. We could put the chip to sleep and have it wake up 
 
-[jekyll-docs]: http://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+[Aria]: http://ariasabeti.me/
+[doorbell]: http://ariasabeti.me/yodoorbell
+[msp430-usb]: http://forum.43oh.com/topic/2962-bit-bang-usb-on-msp430g2452/
