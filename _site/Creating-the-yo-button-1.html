@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Creating the Yo Button, Part 1</title>
+  <meta name="description" content="A while back I was contacted by my friend Aria Sabeti asking for electronics help on his Yo Doorbell. I commented that an esp8266 would be a better fit for t...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/hyde.css">
+  <link rel="stylesheet" href="/css/poole.css">
+  <link rel="stylesheet" href="/css/syntax.css">
+  <link rel="canonical" href="http://epukaza.github.io//Creating-the-yo-button-1">
+  <link rel="alternate" type="application/rss+xml" title="Abhinav Sinha" href="http://epukaza.github.io//feed.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          Abhinav Sinha
+        </a>
+      </h1>
+      <p class="lead">A software educated hardware junkie
+</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Home</a>
+
+      
+
+      
+      
+        
+          
+            <a class="sidebar-nav-item" href="/about/">About me</a>
+          
+        
+      
+        
+      
+        
+      
+        
+      
+
+      <a class="sidebar-nav-item" href="mailto:abhinav.s.sinha@gmail.com">Email</a>
+      <a class="sidebar-nav-item" href="http://github.com/epukaza">GitHub</a>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Creating the Yo Button, Part 1</h1>
+    <p class="post-meta"><time datetime="2016-04-20T00:00:00-07:00" itemprop="datePublished">Apr 20, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>A while back I was contacted by my friend <a href="https://ariasabeti.me/">Aria Sabeti</a> asking for electronics help on his <a href="https://ariasabeti.me/yodoorbell">Yo Doorbell</a>. I commented that an esp8266 would be a better fit for the project, and that a Raspberry Pi was overkill. My comment was put to the test soon after, when the founder of Yo saw the project and contacted us to create a hardware Yo Button.</p>
+
+<p>The goal was to make an IoT button similar to the Amazon Dash button: long battery life (at least weeks if not months), simple interface, and easy setup. Along the way we encountered and overcame several intermixed challenges in our design, ranging from technical to regulatory. We ended up not finishing the project, but I’m documenting it anyways.</p>
+
+<ol>
+  <li><a href="#FCC">FCC certification</a></li>
+  <li><a href="#USB">USB charging</a></li>
+  <li><a href="#BATTERY">Battery life</a></li>
+</ol>
+
+<h3 id="fcc-certification"><a name="FCC"></a>FCC certification</h3>
+
+<p>filler text</p>
+
+<h3 id="usb-charging"><a name="USB"></a>USB charging</h3>
+
+<p>more filler text</p>
+
+<h3 id="battery-life"><a name="BATTERY"></a>Battery life</h3>
+
+<p>The battery life requirement became an obstacle to using the esp8266. Initially, we could not get the current consumption to be lower than 40mA while the chip was awake and idling. The obvious solution was to put the chip to sleep and have it wake up when the user pressed the button. That would have been the way to go if not for two things: the trigger that the ESP needed to wake up from sleep, and the need to detect short and long presses.</p>
+
+<p>The button component pulled a pin low when pressed, but the ESP required a rising edge on its RST pin to wake up from deep sleep. I could have worked around this with a couple of resistors and a capacitor on a separate GPIO pin, but we had the MSP co-processor for USB negotiation and battery charging so we decided to decouple the button detection from the ESP.</p>
+
+<p>In the end, both the ESP8266 and MSP430 defaulted to deep sleep. A button press event would wake up the MSP430 which in turn would wake up the ESP8266 and signal a long or short press.</p>
+
+<p>On deep sleep, the ESP8266 draws ~10 uA, and the MSP430 draws an astonishingly low 0.1uA in LPM4. When active, its an entirely different story, with the ESP8266 drawing as much as 300mA in short bursts as it communicates to the wireless access point.</p>
+
+<p>Choosing the power supply regulator was not a trivial task. My go-to prototyping 3.3V regulator, the LD1117V33 has a quiescent current of 5mA! In other words, it would be consuming 500x as much power as the processors during deep sleep! But any low I<sub>Q</sub> LDO would need to be able to handle the 300mA bursts of the ESP8266. Any LDO with truly low I<sub>Q</sub> was unable to handle the relatively high current requirement (eg: the <a href="https://www.ti.com/lit/ds/symlink/tps783.pdf">TPS783 from TI</a>) After some searching I found the <a href="https://www.microchip.com/wwwproducts/en/MIC5504">Micrel 5504</a> which fit the bill nicely with an I<sub>Q</sub> of 38 uA and capable of delivering 300mA, all in a small SOT-23 package.</p>
+
+<p>With these components our deep sleep current was estimated to be 50 uA, we unfortunately never got to actually measure it. With our target battery size of 680 mAH, the button would have lasted over 9000 hours! More than a year!</p>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+  </body>
+
+</html>

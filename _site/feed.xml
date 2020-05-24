@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Abhinav Sinha</title>
+    <description>A software educated hardware junkie
+</description>
+    <link>http://epukaza.github.io//</link>
+    <atom:link href="http://epukaza.github.io//feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 23 May 2020 23:50:46 -0700</pubDate>
+    <lastBuildDate>Sat, 23 May 2020 23:50:46 -0700</lastBuildDate>
+    <generator>Jekyll v4.0.1</generator>
+    
+      <item>
+        <title>Creating the Yo Button, Part 1</title>
+        <description>&lt;p&gt;A while back I was contacted by my friend &lt;a href=&quot;https://ariasabeti.me/&quot;&gt;Aria Sabeti&lt;/a&gt; asking for electronics help on his &lt;a href=&quot;https://ariasabeti.me/yodoorbell&quot;&gt;Yo Doorbell&lt;/a&gt;. I commented that an esp8266 would be a better fit for the project, and that a Raspberry Pi was overkill. My comment was put to the test soon after, when the founder of Yo saw the project and contacted us to create a hardware Yo Button.&lt;/p&gt;
+
+&lt;p&gt;The goal was to make an IoT button similar to the Amazon Dash button: long battery life (at least weeks if not months), simple interface, and easy setup. Along the way we encountered and overcame several intermixed challenges in our design, ranging from technical to regulatory. We ended up not finishing the project, but I’m documenting it anyways.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;#FCC&quot;&gt;FCC certification&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#USB&quot;&gt;USB charging&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#BATTERY&quot;&gt;Battery life&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;fcc-certification&quot;&gt;&lt;a name=&quot;FCC&quot;&gt;&lt;/a&gt;FCC certification&lt;/h3&gt;
+
+&lt;p&gt;filler text&lt;/p&gt;
+
+&lt;h3 id=&quot;usb-charging&quot;&gt;&lt;a name=&quot;USB&quot;&gt;&lt;/a&gt;USB charging&lt;/h3&gt;
+
+&lt;p&gt;more filler text&lt;/p&gt;
+
+&lt;h3 id=&quot;battery-life&quot;&gt;&lt;a name=&quot;BATTERY&quot;&gt;&lt;/a&gt;Battery life&lt;/h3&gt;
+
+&lt;p&gt;The battery life requirement became an obstacle to using the esp8266. Initially, we could not get the current consumption to be lower than 40mA while the chip was awake and idling. The obvious solution was to put the chip to sleep and have it wake up when the user pressed the button. That would have been the way to go if not for two things: the trigger that the ESP needed to wake up from sleep, and the need to detect short and long presses.&lt;/p&gt;
+
+&lt;p&gt;The button component pulled a pin low when pressed, but the ESP required a rising edge on its RST pin to wake up from deep sleep. I could have worked around this with a couple of resistors and a capacitor on a separate GPIO pin, but we had the MSP co-processor for USB negotiation and battery charging so we decided to decouple the button detection from the ESP.&lt;/p&gt;
+
+&lt;p&gt;In the end, both the ESP8266 and MSP430 defaulted to deep sleep. A button press event would wake up the MSP430 which in turn would wake up the ESP8266 and signal a long or short press.&lt;/p&gt;
+
+&lt;p&gt;On deep sleep, the ESP8266 draws ~10 uA, and the MSP430 draws an astonishingly low 0.1uA in LPM4. When active, its an entirely different story, with the ESP8266 drawing as much as 300mA in short bursts as it communicates to the wireless access point.&lt;/p&gt;
+
+&lt;p&gt;Choosing the power supply regulator was not a trivial task. My go-to prototyping 3.3V regulator, the LD1117V33 has a quiescent current of 5mA! In other words, it would be consuming 500x as much power as the processors during deep sleep! But any low I&lt;sub&gt;Q&lt;/sub&gt; LDO would need to be able to handle the 300mA bursts of the ESP8266. Any LDO with truly low I&lt;sub&gt;Q&lt;/sub&gt; was unable to handle the relatively high current requirement (eg: the &lt;a href=&quot;https://www.ti.com/lit/ds/symlink/tps783.pdf&quot;&gt;TPS783 from TI&lt;/a&gt;) After some searching I found the &lt;a href=&quot;https://www.microchip.com/wwwproducts/en/MIC5504&quot;&gt;Micrel 5504&lt;/a&gt; which fit the bill nicely with an I&lt;sub&gt;Q&lt;/sub&gt; of 38 uA and capable of delivering 300mA, all in a small SOT-23 package.&lt;/p&gt;
+
+&lt;p&gt;With these components our deep sleep current was estimated to be 50 uA, we unfortunately never got to actually measure it. With our target battery size of 680 mAH, the button would have lasted over 9000 hours! More than a year!&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 20 Apr 2016 00:00:00 -0700</pubDate>
+        <link>http://epukaza.github.io//Creating-the-yo-button-1</link>
+        <guid isPermaLink="true">http://epukaza.github.io//Creating-the-yo-button-1</guid>
+        
+        
+        <category>hardware</category>
+        
+        <category>esp8266</category>
+        
+        <category>msp430</category>
+        
+      </item>
+    
+  </channel>
+</rss>
